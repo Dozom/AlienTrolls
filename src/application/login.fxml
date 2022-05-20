@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" text="Alien Trolls" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" text="Alien Trolls" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Login">
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
@@ -24,8 +24,8 @@
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
             </ImageView>
-            <PasswordField layoutX="19.0" layoutY="296.0" prefHeight="24.0" prefWidth="150.0" promptText="Password" />
-            <TextField layoutX="19.0" layoutY="237.0" prefHeight="24.0" prefWidth="150.0" promptText="Username">
+            <PasswordField fx:id="passwordText" layoutX="19.0" layoutY="296.0" prefHeight="24.0" prefWidth="150.0" promptText="Password" />
+            <TextField fx:id="usernameText" layoutX="19.0" layoutY="237.0" prefHeight="24.0" prefWidth="150.0" promptText="Username">
                <cursor>
                   <Cursor fx:constant="TEXT" />
                </cursor></TextField>
@@ -40,7 +40,7 @@
                   <Image url="@../assets/img/kosmos-universum-weltall-sterne-1582712175THY.jpg" />
                </image>
             </ImageView>
-            <Button layoutX="89.0" layoutY="360.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="93.0" style="-fx-background-color: #4f9ff2;" text="Login">
+            <Button fx:id="loginButton" layoutX="89.0" layoutY="360.0" mnemonicParsing="false" onAction="#userLogin" prefHeight="36.0" prefWidth="93.0" style="-fx-background-color: #4f9ff2;" text="Login">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>

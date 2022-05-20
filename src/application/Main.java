@@ -20,7 +20,6 @@ public class Main extends Application {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> System.out.println(event.getTarget()));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -28,8 +27,5 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
-	}
-	public void hoverlogin () {
-		System.out.println("test");
 	}
 }
