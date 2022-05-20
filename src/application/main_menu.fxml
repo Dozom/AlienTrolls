@@ -17,12 +17,12 @@
                   <Image url="@../assets/img/kosmos-universum-weltall-sterne-1582712175THY.jpg" />
                </image>
             </ImageView>
-            <Button layoutX="175.0" layoutY="185.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #ad91c4;" text="Play good">
+            <Button layoutX="175.0" layoutY="185.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #ad91c4;" text="Play ranked">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button layoutX="345.0" layoutY="185.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #ad91c4;" text="ply bad">
+            <Button layoutX="345.0" layoutY="185.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #ad91c4;" text="Play ">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

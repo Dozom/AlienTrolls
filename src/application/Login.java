@@ -42,7 +42,7 @@ public class Login {
 			ResultSet r = s.executeQuery("SELECT * FROM User;"); //Funciona!!
 			
 			while(r.next()) {
-				System.out.println(r.getString(1));
+				System.out.println(r.getString(1) + r.getString(2) + r.getString(3));
 			}
 			
 		} catch (Exception e) {
