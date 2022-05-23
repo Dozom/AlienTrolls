@@ -1,23 +1,25 @@
-package application;
+package controller;
 	
+import css.CssPath;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import view.ViewPath;
 
-
-public class Main extends Application {
+/**
+ * This is the Main Controller
+ *
+ */
+public class MainController extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+			Parent root = FXMLLoader.load(ViewPath.class.getResource("LoginView.fxml"));
 			Scene scene = new Scene(root,640,480);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
