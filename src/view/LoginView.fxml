@@ -16,13 +16,10 @@
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
-            <ImageView fitHeight="598.0" fitWidth="617.0" layoutX="206.0" layoutY="-131.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="463.0" fitWidth="507.0" layoutX="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/MainBackground.jpg" />
                </image>
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
             </ImageView>
             <PasswordField fx:id="passwordText" layoutX="19.0" layoutY="296.0" prefHeight="24.0" prefWidth="150.0" promptText="Password" />
             <TextField fx:id="usernameText" layoutX="19.0" layoutY="237.0" prefHeight="24.0" prefWidth="150.0" promptText="Username">

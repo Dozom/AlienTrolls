@@ -10,7 +10,6 @@ import view.ViewPath;
 
 /**
  * This is the Main Controller
- *
  */
 public class MainController extends Application {
 	

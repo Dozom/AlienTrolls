@@ -44,7 +44,7 @@
             </Button>
             <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="508.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../assets/img/kosmos-universum-weltall-sterne-1582712175THY.jpg" />
+                  <Image url="@../images/MainBackground.jpg" />
                </image>
             </ImageView>
             <Text fx:id="usernameText" fill="WHITE" layoutX="513.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$USERNAME$" />

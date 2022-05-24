@@ -1,8 +1,10 @@
 package controller;
 
+import css.CssPath;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -55,15 +57,17 @@ public class MainMenuController{
 	@FXML
 	void showConfiguration(ActionEvent event) {
 		System.out.println("Show Configuration");
+    	loadConfiguration((Stage)((Node)event.getSource()).getScene().getWindow());
 	}
 /**
 	 * This method loads the Main Menu Page
 	 * @param actualStage Stage to load the next Scene
 	 */
-	public void loadMainMenuScene(Stage actualStage) {
+	public void loadConfiguration(Stage actualStage) {
 		try {
-			Parent root = FXMLLoader.load(ViewPath.class.getResource("MainMenuView.fxml"));
+			Parent root = FXMLLoader.load(ViewPath.class.getResource("Configuration.fxml"));
 			Scene scene = new Scene(root,640,480);
+			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
 			actualStage.setScene(scene);
 			actualStage.show();
 		} catch (Exception e) {

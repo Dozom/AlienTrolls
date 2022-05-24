@@ -1,1 +1,13 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+#cancelButton {
+    -fx-background-color: #d7d7d7;
+}
+#loadConfigurationButton {
+    -fx-background-color: #d7d7d7;
+}
+#saveConfigurationButton {
+    -fx-background-color: #d7d7d7;
+}
+#saveForAllPlayersButton {
+    -fx-background-color: #d7d7d7;
+}
