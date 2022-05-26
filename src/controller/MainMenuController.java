@@ -66,7 +66,7 @@ public class MainMenuController{
 	public void loadConfiguration(Stage actualStage) {
 		try {
 			Parent root = FXMLLoader.load(ViewPath.class.getResource("Configuration.fxml"));
-			Scene scene = new Scene(root,640,480);
+			Scene scene = new Scene(root, 640, 480);
 			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
 			actualStage.setScene(scene);
 			actualStage.show();

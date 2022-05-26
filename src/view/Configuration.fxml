@@ -26,7 +26,7 @@
                   <Slider fx:id="projectileSpeedSlider" layoutX="50.0" layoutY="285.0" max="10.0" min="1.0" onMouseDragged="#getProjectileSpeed" prefHeight="16.0" prefWidth="290.0" />
                   <Label layoutX="50.0" layoutY="351.0" text="Player Ship" />
                   <ImageView fitHeight="64.0" fitWidth="73.0" layoutX="157.0" layoutY="303.0" pickOnBounds="true" preserveRatio="true" />
-      				  <Button fx:id="saveForAllPlayersButton" layoutX="422.0" layoutY="436.0" mnemonicParsing="false" text="Save for all players" />                   
+      				  <Button fx:id="saveForAllPlayersButton" onAction="#saveForAllPlayers" layoutX="422.0" layoutY="436.0" mnemonicParsing="false" text="Save for all players" />                   
                   <Label layoutX="50.0" layoutY="400.0" text="Player Speed" />
                   <Slider fx:id="playerSpeedSlider" layoutX="50.0" layoutY="428.0" max="10.0" min="1.0" onMouseDragged="#getPlayerSpeed" prefHeight="16.0" prefWidth="290.0" />
                   <Button fx:id="loadConfigurationButton" layoutX="422.0" layoutY="476.0" mnemonicParsing="false" text="Load Configuration" />
