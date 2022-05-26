@@ -1,2 +1,0 @@
-# AlienTrolls
-Sintesi Primer DAM
