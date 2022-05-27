@@ -1,15 +1,21 @@
 package GameLogic;
 
+import java.io.FileInputStream;
+
+import css.CssPath;
+import images.ImagePath;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Sprite extends Rectangle {
+	//TODO: take out the rectangle; convert as image
 	final int SCREEN_WIDTH  = 640;
 	final int SCREEN_HEIGHT = 480;
 	
 	boolean dead = false;
 	
-	private final int MOVE_STEPS = 10; //Move speed basically.
+	public final int MOVE_STEPS = 1; //Move speed basically.
 	public String type;
 	
 	public Sprite(int w, int h, int x, int y, String type,  Color color) {
@@ -24,8 +30,15 @@ public class Sprite extends Rectangle {
 	 * Moves the sprite right by {@value MOVE_STEPS}.
 	 */
 	public void moveRight() {
-		if(getTranslateX() < SCREEN_WIDTH - 10 - getWidth())
+		if(checkRight())
 			setTranslateX(getTranslateX() + MOVE_STEPS);
+	}
+	/**
+	 * Checks that the sprite is inside the screen by the right-side.
+	 * @return true if it's inside the screen, false if outside
+	 */
+	public boolean checkRight() {
+		return getTranslateX() < SCREEN_WIDTH - 10 - getWidth();
 	}
 
 	/**
@@ -34,6 +47,14 @@ public class Sprite extends Rectangle {
 	public void moveLeft() {
 		if(getTranslateX() > 10)
 			setTranslateX(getTranslateX() - MOVE_STEPS);
+	}
+	
+	/**
+	 * Checks that the sprite is inside the screen by the left-side.
+	 * @return true if it's inside the screen, false if outside
+	 */
+	public boolean checkLeft() {
+		return getTranslateX() > 10;
 	}
 
 	/**
