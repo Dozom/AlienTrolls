@@ -1,8 +1,10 @@
 package controller;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import css.CssPath;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import view.ViewPath;
@@ -22,6 +25,8 @@ public class ConfigurationController {
 	// Connection to DB
 	Connection conn;
 
+	@FXML 
+	private Image userImage;
 	@FXML
     private Label alienSpeedLabel;
 
@@ -69,7 +74,6 @@ public class ConfigurationController {
     
     @FXML
     private Label playerSpeedLabel;
-
     @FXML
     void getAlienSpeed(MouseEvent event) {
     	alienSpeedLabel.setText(String.valueOf((int)alienSpeedSlider.getValue()));
@@ -90,6 +94,31 @@ public class ConfigurationController {
     	// Set the Configuration for only one player
     }
 
+    public Parent setUpConfiguration() throws IOException {
+		Parent root = FXMLLoader.load(ViewPath.class.getResource("Configuration.fxml"));
+		Scene scene = new Scene(root, 640, 480);
+		scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
+    	return root;
+    }
+	/**
+	 * Load Login Error View
+	 */
+	public void loadErrorFields() {
+		try {
+			Stage errorFields = new Stage();
+			Parent root = FXMLLoader.load(ViewPath.class.getResource("ErrorFields.fxml"));
+			// Scene with 640 width and 480 height
+			Scene scene = new Scene(root, 100, 100);
+			// Add css
+			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
+			// Set Scene to the Stage
+			errorFields.setScene(scene);
+			// Show Stage
+			errorFields.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
     /**
      * This function save the configuration for all the players
      * @param event Event parameter to catch the click of the button
@@ -102,6 +131,12 @@ public class ConfigurationController {
 	    	ConnectDBController c = new ConnectDBController();
 			conn = c.getConnection();
 			result = insertConfiguration(conn, alienImage.getText(), (int)alienSpeedSlider.getValue(), playerImage.getText(), 0, 0, 1, 10, 2, gameName.getText(), (int)killPlayerShots.getValue(), (int) playerSpeedSlider.getValue(), (int)rowsSpinner.getValue(), (int)columnsSpinner.getValue());
+			
+			// Show Error Fields
+			if (!result) {
+				loadErrorFields();
+			}
+
 			// Loads the Menu Scene
 			loadMainMenuScene((Stage)((Node)event.getSource()).getScene().getWindow());
     	} catch (Exception e) {
@@ -129,6 +164,18 @@ public class ConfigurationController {
      * @return Returns true if the insert is Ok, otherwise, returns false
      */
     public boolean insertConfiguration(Connection c, String alienImage, int speedAliens, String playerImage, int rotateAliens, int userId, int ranked, int sizeBlocs, int numBlocs, String gameName, int killPlayerShots, int speedPlayer, int rowsAlien, int columnsAlien) {
+
+    	String[] fields = {alienImage, String.valueOf(speedAliens), 
+    			playerImage, String.valueOf(rotateAliens), String.valueOf(userId), 
+    			String.valueOf(ranked), String.valueOf(sizeBlocs), String.valueOf(numBlocs), 
+    			gameName, String.valueOf(killPlayerShots), String.valueOf(speedPlayer), 
+    			String.valueOf(rowsAlien), String.valueOf(columnsAlien)};
+    	
+    	for (String field : fields) {
+			if (field.equals("")) {
+				return false;
+			}
+		}
     	try {
 			PreparedStatement s = c.prepareStatement("INSERT INTO "
 					+ "Configuration(image_aliens, speed_aliens, image_player, rotate_aliens, user_id, ranked, size_blocs, "
@@ -146,8 +193,8 @@ public class ConfigurationController {
 			s.setInt(11,speedPlayer);
 			s.setInt(12,rowsAlien);
 			s.setInt(13,columnsAlien);
-			boolean result = s.execute();
-	    	return result;
+			s.execute();
+	    	return true;
     	} catch (Exception e) {
     		e.printStackTrace();
 		}    

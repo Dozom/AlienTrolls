@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #234;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18">
+   <children>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="645.0" style="-fx-background-color: #334;">
+         <children>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="60.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="125.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="206.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="270.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="337.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="403.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+            <ImageView fitHeight="105.0" fitWidth="105.0" layoutX="472.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/alien.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" contrast="0.02" />
+               </effect>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
