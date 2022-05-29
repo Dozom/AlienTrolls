@@ -24,7 +24,8 @@ import view.ViewPath;
 public class ConfigurationController {
 	// Connection to DB
 	Connection conn;
-
+	private Parent root;
+	private Scene scene;
 	@FXML 
 	private Image userImage;
 	@FXML
@@ -93,14 +94,7 @@ public class ConfigurationController {
     void saveConfigurationOnlyPlayer(MouseEvent event) {
     	// Set the Configuration for only one player
     }
-
-    public Parent setUpConfiguration() throws IOException {
-		Parent root = FXMLLoader.load(ViewPath.class.getResource("Configuration.fxml"));
-		Scene scene = new Scene(root, 640, 480);
-		scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
-    	return root;
-    }
-	/**
+     /**
 	 * Load Login Error View
 	 */
 	public void loadErrorFields() {

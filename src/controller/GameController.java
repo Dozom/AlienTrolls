@@ -6,7 +6,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import GameLogic.*;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -272,13 +275,27 @@ public class GameController {
 		if(!gameOver) {
 			gameOver = true;
 			String gameOverText = hasWon ? "Has guanyat, felicitats!" : "Has perdut!";
+			Button tancar = new Button("Tancar joc");
+			tancar.setOnAction(e -> {
+				Platform.exit();
+			});;
+			
+			Button mainMenu = new Button("Menu Principal");
 			Label b = new Label(gameOverText);
 			final  Stage stage = new Stage();           
-			Group root = new Group();
-			root.getChildren().add(b);
-			Scene scene = new Scene(root, 300, 250, Color.LIGHTGREEN);						          						         
+			BorderPane root = new BorderPane();
+			root.setCenter(b);
+			BorderPane Botons = new BorderPane();
+			Botons.setLeft(mainMenu);
+			Botons.setRight(tancar);
+			root.setBottom(Botons);
+			Scene scene = new Scene(root, 200, 100);						          						         
 			stage.setScene(scene);        
 			stage.show();
 		}
+	}
+	
+	private void loadMainMenu() {
+		
 	}
 }

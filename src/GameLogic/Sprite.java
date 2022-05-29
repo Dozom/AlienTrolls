@@ -14,7 +14,7 @@ public class Sprite extends Rectangle {
 	
 	boolean dead = false;
 	
-	public final int MOVE_STEPS = 5; //Move speed basically.
+	public final int MOVE_STEPS = 15; //Move speed basically.
 	public String type;
 	
 	public Sprite(int w, int h, int x, int y, String type,  Color color) {

@@ -79,6 +79,7 @@ public class MainMenuController{
 	@FXML
 	void showRanking(ActionEvent event) {
 		System.out.println("Show Ranking");
+		RankingController rcontroller = new RankingController((Stage)((Node)event.getSource()).getScene().getWindow());
 	}
 
 	@FXML
@@ -90,7 +91,6 @@ public class MainMenuController{
 	void showConfiguration(ActionEvent event) {
 		System.out.println("Show Configuration");		
     	loadConfiguration((Stage)((Node)event.getSource()).getScene().getWindow());
-//    	new ConfigurationController((Stage)((Node)event.getSource()).getScene().getWindow());
 	}
 /**
 	 * This method loads the Main Menu Page
