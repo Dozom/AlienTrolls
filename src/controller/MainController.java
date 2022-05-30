@@ -9,25 +9,35 @@ import javafx.stage.Stage;
 import view.ViewPath;
 
 /**
- * This is the Main Controller
- *
+ * This is the Main Controller which inits the application
  */
 public class MainController extends Application {
 	
+	/**
+	 * This method starts the Stage and application
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(ViewPath.class.getResource("MainMenuView.fxml"));
+			// root pane
+			Parent root = FXMLLoader.load(ViewPath.class.getResource("LoginView.fxml"));
+			// Scene with 640 width and 480 height
 			Scene scene = new Scene(root,640,480);
+			// Add css
 			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
+			// Set Scene to the Stage
 			primaryStage.setScene(scene);
+			// Show Stage
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("test");
 	}
 
+	/**
+	 * Main method which inits the application
+	 * @param args arguments for Main
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

@@ -6,12 +6,16 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import GameLogic.*;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -23,11 +27,11 @@ public class GameController {
 	private int score = 0;
 	Random r;
 	private Pane root = new Pane();	
-	private Sprite plyr = new Sprite(40, 40, 300, 400, "player", Color.BLUE);
+	private Player plyr = new Player(40, 40, 300, 400, "player", Color.BLUE);
 	private Sprite plyrBull = new Sprite(5, 20, 0, 0, "playerBullet", Color.BLACK);
 	
-	private final int ROWS = 1;
-	private final int COLUMNS = 1;
+	private final int ROWS = 3;
+	private final int COLUMNS = 5;
 	private final int maxScore = (ROWS * (ROWS + 1) / 2) * 10 * COLUMNS;
 	private Sprite[][] aliens = new Sprite[ROWS][COLUMNS];
 	private boolean alienDir;
@@ -65,15 +69,16 @@ public class GameController {
 		return root;
 	} 
 
-
+	
 	/**
 	 * Runs every tick. Moves bullets and enemies, checks collisions, and checks deaths.
 	 */
 	private void update() {
 		
+		
 		//MOVEMENT
 		moveAliens();
-		//t+=0.016; //Each tick is calculated every 16ms.
+		plyr.move();
 
 		//COLLISIONS
 		
@@ -90,15 +95,6 @@ public class GameController {
 						score += (ROWS - i) * 10;							
 						if (score == maxScore) {
 							gameOver(true);
-							// end game
-							
-							
-							
-							
-							
-							
-							
-							// end 
 							System.out.println("El joc ha acabat. Puntuació: " + score);
 						}
 						
@@ -112,7 +108,16 @@ public class GameController {
 			if(plyrBull.getTranslateY() < 0) {
 				kill(plyrBull);
 			}
+			
 		}
+		
+		//Enemy shooting
+		final int i = (int)(Math.random() * ROWS), j = (int)(Math.random()*COLUMNS);
+		if(Math.random() < 0 && !aliens[i][j].isDead()) {
+			shoot(aliens[i][j]);
+		}
+		
+		
 		
 	}
 	
@@ -144,7 +149,7 @@ public class GameController {
 			root.getChildren().add(plyrBull);
 		} else {
 			Sprite enemyBull = new Sprite(5, 20,(int)(shooter.getTranslateX() + shooter.getWidth()/2),
-				     (int)(shooter.getTranslateY() - shooter.getHeight()/2), "enemyBullet", Color.BLACK);
+				     (int)(shooter.getTranslateY() + shooter.getHeight()/2), "enemyBullet", Color.BLACK);
 			root.getChildren().add(enemyBull);
 		}
 	}
@@ -156,19 +161,30 @@ public class GameController {
 	public void loadGameScene(Stage stage) {
 		try {
 			Scene sc = new Scene(setupGame());
-			
 			sc.setOnKeyPressed(e -> {
+				System.out.println(e.getCode());
+				if(e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+					plyr.setMovingLeft(true);
+				}
+				
+				if(e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+					plyr.setMovingRight(true);
+				}
+				
+				
 				switch (e.getCode()) {
-				case A, LEFT: 
-					plyr.moveLeft();
-					break;
-				case D, RIGHT:
-					plyr.moveRight();
-					break;
 				case SPACE, X, Z:
 					shoot(plyr);
 				default:
 					break;
+				}
+			});
+			
+			sc.setOnKeyReleased(e -> {
+				if(e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+					plyr.setMovingLeft(false);
+				} else if(e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+					plyr.setMovingRight(false);
 				}
 			});
 			
@@ -242,6 +258,10 @@ public class GameController {
 		return false;
 	}
 	
+	/**
+	 * Checks if the aliens have reached the limit of the map. If they have, it's game over, the player loses.
+	 * @return whether the aliens have reached their destination.
+	 */
 	private boolean checkAlienRows() {
 			for (int j = ROWS-1; j >= 0; j--) {
 				if(aliens[j][0].getTranslateY() >= plyr.getTranslateY() - plyr.getHeight()/2) { 
@@ -262,24 +282,51 @@ public class GameController {
 	
 	/**
 	 * Sets a sprite to dead, removing it from collision checks or movement.
-	 * @param s
+	 * @param s entity to kill
 	 */
 	private void kill(Sprite s) {
 		root.getChildren().remove(s);
 		s.setDead(true);
 	}
 	
+	/**
+	 * Game over screen.
+	 * @param hasWon boolean, whether the player has won or lost.
+	 */
 	private void gameOver(boolean hasWon) {
 		if(!gameOver) {
 			gameOver = true;
 			String gameOverText = hasWon ? "Has guanyat, felicitats!" : "Has perdut!";
+			Button tancar = new Button("Tancar joc");
+			tancar.setOnAction(e -> {
+				Platform.exit();
+			});;
+			
+			Button mainMenu = new Button("Menu Principal");
 			Label b = new Label(gameOverText);
 			final  Stage stage = new Stage();           
-			Group root = new Group();
-			root.getChildren().add(b);
-			Scene scene = new Scene(root, 300, 250, Color.LIGHTGREEN);						          						         
+			BorderPane root = new BorderPane();
+			root.setCenter(b);
+			BorderPane Botons = new BorderPane();
+			Botons.setLeft(mainMenu);
+			Botons.setRight(tancar);
+			root.setBottom(Botons);
+			Scene scene = new Scene(root, 200, 100);						          						         
 			stage.setScene(scene);        
 			stage.show();
 		}
 	}
+	
+	private void loadMainMenu() {
+		
+	}
+	
+
+	/**
+	 * Returns the parent element.
+	 */
+	public Parent getParent() {
+		return root;
+	}
+
 }
