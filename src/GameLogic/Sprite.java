@@ -1,10 +1,8 @@
 package GameLogic;
 
-import java.io.FileInputStream;
-
-import css.CssPath;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Sprite extends Rectangle {
@@ -14,7 +12,7 @@ public class Sprite extends Rectangle {
 	
 	boolean dead = false;
 	
-	public final int MOVE_STEPS = 15; //Move speed basically.
+	public final int MOVE_STEPS = 5; //Move speed basically.
 	public String type;
 	
 	public Sprite(int w, int h, int x, int y, String type,  Color color) {
@@ -22,6 +20,13 @@ public class Sprite extends Rectangle {
 		this.type = type;
 		setTranslateX(x);
 		setTranslateY(y);
+		Image s;
+		try {
+			s = new Image("https://upload.wikimedia.org/wikipedia/commons/7/7e/Demon_Icon.png");
+			super.setFill(new ImagePattern(s));
+		} catch (Exception e) {
+			System.out.println("HI ha hagut un error al carregar l'imatge");
+		}
 	}
 	
 

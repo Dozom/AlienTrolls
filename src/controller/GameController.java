@@ -1,45 +1,74 @@
 package controller;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 import GameLogic.*;
+import css.CssPath;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
+import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import view.ViewPath;
 
 public class GameController {
-	
+	private int type;
+	private int userId;
+	private String username;
+
 	private int score = 0;
-	Random r;
 	private Pane root = new Pane();	
-	private Sprite plyr = new Sprite(40, 40, 300, 400, "player", Color.BLUE);
+	private Player plyr = new Player(40, 40, 300, 400, "player", Color.BLUE);
 	private Sprite plyrBull = new Sprite(5, 20, 0, 0, "playerBullet", Color.BLACK);
-	
+	Stage prevStage;
 	private final int ROWS = 3;
 	private final int COLUMNS = 5;
 	private final int maxScore = (ROWS * (ROWS + 1) / 2) * 10 * COLUMNS;
 	private Sprite[][] aliens = new Sprite[ROWS][COLUMNS];
 	private boolean alienDir;
 	private boolean gameOver;
+	private int ranked;	
 	
-	
-	GameController(Stage stage) {
-		loadGameScene(stage);
+	GameController(Stage stage, int ranked) {
+		this.prevStage = stage;
+		this.ranked = ranked;
+		loadGameScene(prevStage);
 	}
+	
+	public int getType() {
+		return type;
+	}
+
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+
+	public int getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 
 	
 	/**
@@ -64,19 +93,25 @@ public class GameController {
 		timer.start();
 		
 		nextLevel();
-	
+		if (ranked == 1) {
+			root.setId("rankedGame");
+		} else {
+			root.setId("gamePane");
+		}		
+		root.getStylesheets().add(CssPath.class.getResource("gameBackground.css").toExternalForm());			
 		return root;
 	} 
 
-
+	
 	/**
 	 * Runs every tick. Moves bullets and enemies, checks collisions, and checks deaths.
 	 */
 	private void update() {
 		
+		
 		//MOVEMENT
 		moveAliens();
-		//t+=0.016; //Each tick is calculated every 16ms.
+		plyr.move();
 
 		//COLLISIONS
 		
@@ -93,15 +128,6 @@ public class GameController {
 						score += (ROWS - i) * 10;							
 						if (score == maxScore) {
 							gameOver(true);
-							// end game
-							
-							
-							
-							
-							
-							
-							
-							// end 
 							System.out.println("El joc ha acabat. Puntuació: " + score);
 						}
 						
@@ -115,7 +141,16 @@ public class GameController {
 			if(plyrBull.getTranslateY() < 0) {
 				kill(plyrBull);
 			}
+			
 		}
+		
+		//Enemy shooting
+		final int i = (int)(Math.random() * ROWS), j = (int)(Math.random()*COLUMNS);
+		if(Math.random() < 0 && !aliens[i][j].isDead()) {
+			shoot(aliens[i][j]);
+		}
+		
+		
 		
 	}
 	
@@ -147,7 +182,7 @@ public class GameController {
 			root.getChildren().add(plyrBull);
 		} else {
 			Sprite enemyBull = new Sprite(5, 20,(int)(shooter.getTranslateX() + shooter.getWidth()/2),
-				     (int)(shooter.getTranslateY() - shooter.getHeight()/2), "enemyBullet", Color.BLACK);
+				     (int)(shooter.getTranslateY() + shooter.getHeight()/2), "enemyBullet", Color.BLACK);
 			root.getChildren().add(enemyBull);
 		}
 	}
@@ -159,14 +194,19 @@ public class GameController {
 	public void loadGameScene(Stage stage) {
 		try {
 			Scene sc = new Scene(setupGame());
+
 			sc.setOnKeyPressed(e -> {
+				System.out.println(e.getCode());
+				if(e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+					plyr.setMovingLeft(true);
+				}
+				
+				if(e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+					plyr.setMovingRight(true);
+				}
+				
+				
 				switch (e.getCode()) {
-				case A, LEFT: 
-					plyr.moveLeft();
-					break;
-				case D, RIGHT:
-					plyr.moveRight();
-					break;
 				case SPACE, X, Z:
 					shoot(plyr);
 				default:
@@ -174,6 +214,13 @@ public class GameController {
 				}
 			});
 			
+			sc.setOnKeyReleased(e -> {
+				if(e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+					plyr.setMovingLeft(false);
+				} else if(e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+					plyr.setMovingRight(false);
+				}
+			});
 			stage.setScene(sc);
 			stage.show();
 			
@@ -244,6 +291,10 @@ public class GameController {
 		return false;
 	}
 	
+	/**
+	 * Checks if the aliens have reached the limit of the map. If they have, it's game over, the player loses.
+	 * @return whether the aliens have reached their destination.
+	 */
 	private boolean checkAlienRows() {
 			for (int j = ROWS-1; j >= 0; j--) {
 				if(aliens[j][0].getTranslateY() >= plyr.getTranslateY() - plyr.getHeight()/2) { 
@@ -264,38 +315,86 @@ public class GameController {
 	
 	/**
 	 * Sets a sprite to dead, removing it from collision checks or movement.
-	 * @param s
+	 * @param s entity to kill
 	 */
 	private void kill(Sprite s) {
 		root.getChildren().remove(s);
 		s.setDead(true);
 	}
 	
+	/**
+	 * Game over screen.
+	 * @param hasWon boolean, whether the player has won or lost.
+	 */
 	private void gameOver(boolean hasWon) {
 		if(!gameOver) {
 			gameOver = true;
-			String gameOverText = hasWon ? "Has guanyat, felicitats!" : "Has perdut!";
-			Button tancar = new Button("Tancar joc");
-			tancar.setOnAction(e -> {
-				Platform.exit();
-			});;
-			
-			Button mainMenu = new Button("Menu Principal");
-			Label b = new Label(gameOverText);
-			final  Stage stage = new Stage();           
-			BorderPane root = new BorderPane();
-			root.setCenter(b);
-			BorderPane Botons = new BorderPane();
-			Botons.setLeft(mainMenu);
-			Botons.setRight(tancar);
-			root.setBottom(Botons);
-			Scene scene = new Scene(root, 200, 100);						          						         
-			stage.setScene(scene);        
-			stage.show();
+			endedGameScreen(hasWon);
 		}
 	}
-	
-	private void loadMainMenu() {
+
+	private void endedGameScreen(boolean hasWon) {
+		final  Stage stage = new Stage();           
+
+		// Label Text
+		String gameOverText = hasWon ? "Has guanyat, felicitats!" : "Has perdut!";
+
+		// Button to close the game
+		Button tancar = new Button("Tancar joc");
+		tancar.setOnAction(e -> {
+			// Exit application
+			Platform.exit();
+		});			
 		
+		// Button to load Main Menu
+		Button mainMenu = new Button("Menu Principal");
+		mainMenu.setOnAction(e -> {
+			closeEndedGameMenu(e);
+			// Load Main Menu Scene
+			loadMainMenuScene();
+		});			
+
+		// Text which indicates if the player won or lose
+		Label winOrLose = new Label(gameOverText);
+		
+		// ended Game Screen Stage
+		BorderPane endGameScreenGame = new BorderPane();
+		endGameScreenGame.setCenter(winOrLose);
+		
+		// Add buttons
+		BorderPane buttonsPane = new BorderPane();
+		buttonsPane.setLeft(mainMenu);
+		buttonsPane.setRight(tancar);
+		endGameScreenGame.setBottom(buttonsPane);
+		
+		// Add Scene with the content and set it to the Stage & Show
+		Scene scene = new Scene(endGameScreenGame, 200, 100);						          						         
+		stage.setScene(scene);        
+		stage.show();
 	}
+
+	private void closeEndedGameMenu(ActionEvent e) {
+		Stage hideOnClick = ((Stage)((Node)e.getSource()).getScene().getWindow());
+		hideOnClick.hide();
+	}
+	
+	/**
+	 * This method loads the Main Menu Page
+	 * @param actualStage Stage to load the next Scene
+	 */
+	public void loadMainMenuScene() {
+		try {
+			new MainMenuController(prevStage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+
+	/**
+	 * Returns the parent element.
+	 */
+	public Parent getParent() {
+		return root;
+	}
+
 }
