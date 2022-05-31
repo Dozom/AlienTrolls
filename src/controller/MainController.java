@@ -20,7 +20,7 @@ public class MainController extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			// root pane
-			Parent root = FXMLLoader.load(ViewPath.class.getResource("LoginView.fxml"));
+			Parent root = FXMLLoader.load(ViewPath.class.getResource("MainMenuView.fxml"));
 			// Scene with 640 width and 480 height
 			Scene scene = new Scene(root,640,480);
 			// Add css

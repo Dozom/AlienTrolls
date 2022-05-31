@@ -1,24 +1,15 @@
 package controller;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 import GameLogic.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import view.ViewPath;
 
@@ -26,14 +17,15 @@ public class GameController {
 	
 	private int score = 0;
 	Random r;
-	private Pane root = new Pane();	
-	private Player plyr = new Player(40, 40, 300, 400, "player", Color.BLUE);
-	private Sprite plyrBull = new Sprite(5, 20, 0, 0, "playerBullet", Color.BLACK);
+	private static Pane root = new Pane();	
+	private Player plyr = new Player(300, 400, "/home/rguinartv/Imatges/sneed.png");
+	private Projectile plyrBull = plyr.plyrBull;
 	
-	private final int ROWS = 3;
-	private final int COLUMNS = 5;
+	private final int ROWS = 4;
+	private final int COLUMNS = 6;
 	private final int maxScore = (ROWS * (ROWS + 1) / 2) * 10 * COLUMNS;
-	private Sprite[][] aliens = new Sprite[ROWS][COLUMNS];
+	private Enemy[][] aliens = new Enemy[ROWS][COLUMNS];
+	private Projectile[] alienBulls = new Projectile[10]; //At most, 3 projectiles will be on screen at the same time.
 	private boolean alienDir;
 	private boolean gameOver;
 	
@@ -71,23 +63,22 @@ public class GameController {
 
 	
 	/**
-	 * Runs every tick. Moves bullets and enemies, checks collisions, and checks deaths.
+	 * Runs every tick. Moves bullets and enemies, checks collisions and deaths.
 	 */
 	private void update() {
 		
-		
 		//MOVEMENT
+		plyr.update();
 		moveAliens();
-		plyr.move();
+		for (Projectile p : alienBulls) { if(p != null) p.update(); }
 
 		//COLLISIONS
 		
 		if(!plyrBull.isDead()) {
-			plyrBull.moveUp();
+			plyrBull.update();
 
 			for (int i = 0; i < ROWS; i++) {
 				for (int j = 0; j < COLUMNS; j++) {
-					
 					if(!plyrBull.isDead() && !aliens[i][j].isDead() &&
 						plyrBull.getBoundsInParent().intersects(aliens[i][j].getBoundsInParent())
 					) {
@@ -112,11 +103,27 @@ public class GameController {
 		}
 		
 		//Enemy shooting
-		final int i = (int)(Math.random() * ROWS), j = (int)(Math.random()*COLUMNS);
-		if(Math.random() < 0 && !aliens[i][j].isDead()) {
-			shoot(aliens[i][j]);
+		if(score != maxScore) {
+			
+			if(Math.random() < 0.04) {
+				int i , j;
+				do {
+					i = (int)(Math.random() * ROWS);
+					j = (int)(Math.random()*COLUMNS);
+				} while (aliens[i][j].isDead());
+				shoot(aliens[i][j]);
+			}
 		}
-		
+
+		//Enemy bullet collision check
+		for (Projectile p : alienBulls) {
+			if(p == null || p.isDead()) return;
+			
+			if(p.getBoundsInParent().intersects(plyr.getBoundsInParent()) && !plyr.isDead()) {
+				kill(plyr);
+				gameOver(false);
+			}
+		}
 		
 		
 	}
@@ -127,31 +134,27 @@ public class GameController {
 	private void nextLevel() {
 		for (int i = 0; i < aliens.length; i++) {
 			for (int j = 0; j < aliens[i].length; j++) {
-				 aliens[i][j] = new Sprite(30, 30, 50+j*50, 50+i*50, "enemy", Color.RED);
+				 aliens[i][j] = new Enemy(50+j*50, 50+i*50, "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg");
 				 root.getChildren().add(aliens[i][j]);
 			}
 		}
 	}
 	
 	/**
-	 * Shoots 
-	 * @param shooter
+	 * Shooting function for the aliens.
+	 * @param shooter alien that shoots
 	 */
 	private void shoot(Sprite shooter) {
-		if(shooter.getType().equals("player")) {
-
-			if(!plyrBull.isDead()) return;
-
-			plyrBull.setTranslateX((int)(plyr.getTranslateX() + plyr.getWidth()/2));
-			plyrBull.setTranslateY((int)(shooter.getTranslateY() - shooter.getHeight()/2));
-			plyrBull.setDead(false);
-			
-			root.getChildren().add(plyrBull);
-		} else {
-			Sprite enemyBull = new Sprite(5, 20,(int)(shooter.getTranslateX() + shooter.getWidth()/2),
-				     (int)(shooter.getTranslateY() + shooter.getHeight()/2), "enemyBullet", Color.BLACK);
-			root.getChildren().add(enemyBull);
+		for (int i = 0; i < alienBulls.length; i++) {
+			if(alienBulls[i] == null || alienBulls[i].isDead()) {
+				alienBulls[i]  = new Projectile((int)(shooter.getTranslateX() + shooter.getWidth()/2),
+					     (int)(shooter.getTranslateY() + shooter.getHeight()/2), 
+					     "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", true);
+				root.getChildren().add(alienBulls[i]);
+				break;
+			}
 		}
+		
 	}
 	
 	/**
@@ -162,29 +165,34 @@ public class GameController {
 		try {
 			Scene sc = new Scene(setupGame());
 			sc.setOnKeyPressed(e -> {
-				System.out.println(e.getCode());
-				if(e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
-					plyr.setMovingLeft(true);
-				}
-				
-				if(e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
-					plyr.setMovingRight(true);
-				}
-				
 				
 				switch (e.getCode()) {
 				case SPACE, X, Z:
-					shoot(plyr);
+					plyr.setShooting(true);
+					break;
+				case A, LEFT:
+					plyr.setMovingLeft(true);
+					break;
+				case D, RIGHT:
+					plyr.setMovingRight(true);
 				default:
 					break;
 				}
 			});
 			
 			sc.setOnKeyReleased(e -> {
-				if(e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+				
+				switch (e.getCode()) {
+				case SPACE, X, Z:
+					plyr.setShooting(false);
+					break;
+				case A, LEFT:
 					plyr.setMovingLeft(false);
-				} else if(e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+					break;
+				case D, RIGHT:
 					plyr.setMovingRight(false);
+				default:
+					break;
 				}
 			});
 			
@@ -205,8 +213,8 @@ public class GameController {
 		
 		if(checkAlienColumn()) { //If they've reached one of the screen's edges...
 
-			for (Sprite[] aliens : aliens) {
-				for (Sprite alien : aliens) {
+			for (Enemy[] aliens : aliens) {
+				for (Enemy alien : aliens) {
 					alien.moveDown();
 				}
 			}
@@ -325,7 +333,7 @@ public class GameController {
 	/**
 	 * Returns the parent element.
 	 */
-	public Parent getParent() {
+	public static Pane getPane() {
 		return root;
 	}
 

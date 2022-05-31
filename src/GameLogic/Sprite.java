@@ -1,37 +1,33 @@
 package GameLogic;
 
-
-import java.io.FileInputStream;
-
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-public class Sprite extends Rectangle {
-	//TODO: take out the rectangle; convert as image
+public abstract class Sprite extends Rectangle {
 	final int SCREEN_WIDTH  = 640;
 	final int SCREEN_HEIGHT = 480;
 	
 	boolean dead = false;
 	
-	public final int MOVE_STEPS = 5; //Move speed basically.
+	public final int MOVE_STEPS = 2; //Move speed basically.
 	public String type;
 	
-	public Sprite(int w, int h, int x, int y, String type,  Color color) {
-		super(w,h,color);
-		this.type = type;
+	public Sprite(int w, int h, int x, int y, String image) {
+		super(w,h);
 		setTranslateX(x);
 		setTranslateY(y);
 		Image s;
 		try {
-		//	s = new Image(new FileInputStream("/home/rguinartv/Imatges/sneed.png"));			
-			s = new Image("https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg");
+			s = new Image(image);
+			//s = new Image(new FileInputStream("/home/rguinartv/Imatges/sneed.png"));			
 			super.setFill(new ImagePattern(s));
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
+	
+	public abstract void update();
 	
 
 	/**

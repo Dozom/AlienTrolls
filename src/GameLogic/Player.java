@@ -1,32 +1,29 @@
 package GameLogic;
 
-import java.io.FileInputStream;
 
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
+import controller.GameController;
 
 public class Player extends Sprite {
 
-	final double acceleration = 0.25;
+	final double acceleration = 0.5;
 	private float velocity = 0;
 	private boolean movingLeft = false, movingRight = false;
+	private boolean shooting = false;
+	public Projectile plyrBull = new Projectile(0, 0, "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", false);
 
-	public Player(int w, int h, int x, int y, String type, Color color) {
-		super(w, h, x, y, type, color);
-		
-		Image s;
-		try {
-			s = new Image(new FileInputStream("/home/rguinartv/Imatges/sneed.png"));			
-			super.setFill(new ImagePattern(s));
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-//		Image s = new Image("https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg");
-		// TODO Auto-generated constructor stub
+	public Player(int x, int y, String image) {
+		super(40, 40, x, y, image);
+	}
+	
+	@Override
+	public void update() {
+		if(dead) return;
+		move();
+		if(shooting) shoot();
 	}
 
 	public void move() {
+		
 
 		// Cancel all movement if at the edge of the screen.
 		if ((getTranslateX() >= SCREEN_WIDTH - 10 - getWidth() && movingRight)
@@ -62,6 +59,17 @@ public class Player extends Sprite {
 
 		setTranslateX(getTranslateX() + velocity);
 	}
+	
+	public void shoot() {
+		// TODO Auto-generated method stub
+		if(!plyrBull.isDead()) return;
+
+		plyrBull.setTranslateX((int)(getTranslateX() + getWidth()/2));
+		plyrBull.setTranslateY((int)(getTranslateY() - getHeight()/2));
+		plyrBull.setDead(false);
+		
+		GameController.getPane().getChildren().add(plyrBull);
+	}
 
 	public void setMovingLeft(boolean moving) {
 		this.movingLeft = moving;
@@ -71,4 +79,5 @@ public class Player extends Sprite {
 		this.movingRight = movingRight;
 	}
 
+	public void setShooting(boolean shooting) { this.shooting = shooting; }
 }
