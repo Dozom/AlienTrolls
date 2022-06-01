@@ -6,8 +6,8 @@ import java.sql.DriverManager;
  * This Class, allows to Connect to Database
  */
 public class ConnectDBController {
-	// This attribute, helps to keep connection during the Game
 	private Connection c;
+
 	/**
 	 * Constructor of the Database Connection
 	 */

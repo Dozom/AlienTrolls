@@ -1,10 +1,7 @@
 package controller;
 
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-
-import css.CssPath;
+import java.sql.Connection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,13 +16,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+import css.CssPath;
 import view.ViewPath;
 
 public class ConfigurationController {
 	// Connection to DB
 	Connection conn;
-	private Parent root;
-	private Scene scene;
+	private Stage prevStage;
+	private Parent parent;
 	@FXML 
 	private Image userImage;
 	@FXML
@@ -75,6 +74,27 @@ public class ConfigurationController {
     
     @FXML
     private Label playerSpeedLabel;
+    
+    public ConfigurationController() {
+    	
+    }
+    
+    public ConfigurationController(Stage stage) {
+		this.prevStage = stage;
+		try {
+			parent = FXMLLoader.load(ViewPath.class.getResource("Configuration.fxml"));
+			Scene scene = new Scene(parent,640,480);
+			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
+			
+			// Change Scene
+			prevStage.setScene(scene);
+			prevStage.show();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
     @FXML
     void getAlienSpeed(MouseEvent event) {
     	alienSpeedLabel.setText(String.valueOf((int)alienSpeedSlider.getValue()));
@@ -159,6 +179,7 @@ public class ConfigurationController {
      */
     public boolean insertConfiguration(Connection c, String alienImage, int speedAliens, String playerImage, int rotateAliens, int userId, int ranked, int sizeBlocs, int numBlocs, String gameName, int killPlayerShots, int speedPlayer, int rowsAlien, int columnsAlien) {
 
+    	// Parse values to String
     	String[] fields = {alienImage, String.valueOf(speedAliens), 
     			playerImage, String.valueOf(rotateAliens), String.valueOf(userId), 
     			String.valueOf(ranked), String.valueOf(sizeBlocs), String.valueOf(numBlocs), 

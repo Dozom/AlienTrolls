@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Random;
 import RankingViews.PlayerOnly;
 import images.ImagePath;
 import javafx.fxml.FXMLLoader;
@@ -20,11 +19,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import view.ViewPath;
 public class RankingController {	
-	Random r;
 	Connection conn;
 	String[] loginInfo;
 	ArrayList<PlayerOnly> playerData = new ArrayList<PlayerOnly>();
-	RankingController(Stage stage) {
+	
+	public RankingController(Stage stage) {
 		loadRankingScene(stage);
 	}
 
@@ -49,27 +48,27 @@ public class RankingController {
 	 * This creates the Table Structure and fill it with data
 	 * @return Returns a Table filled of data
 	 */
-	private TableView table() {
-		// Init table
-		TableView table = new TableView<PlayerOnly>();
+	private TableView<PlayerOnly> table() {
+		// Initialize table
+		TableView<PlayerOnly> table = new TableView<PlayerOnly>();
 
-		// Init place column
+		// Initialize place column
 		TableColumn placeColumn = new TableColumn("Place"); 
-		placeColumn.setCellValueFactory(new PropertyValueFactory<PlayerOnly, Integer>("place"));
+		placeColumn.setCellValueFactory(new PropertyValueFactory<>("place"));
 
-		// Init score column
+		// Initialize score column
 		TableColumn scoreColumn = new TableColumn("Score"); 
-		scoreColumn.setCellValueFactory(new PropertyValueFactory<PlayerOnly, Integer>("score"));
+		scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 		
-		// Init username column
+		// Initialize User Name column
 		TableColumn usernameColumn = new TableColumn("Username"); 
-		usernameColumn.setCellValueFactory(new PropertyValueFactory<PlayerOnly, String>("username"));
+		usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-		// Init configuration column
+		// Initialize configuration column
 		TableColumn configurationColumn = new TableColumn("Game Name"); 
-		configurationColumn.setCellValueFactory(new PropertyValueFactory<PlayerOnly, String>("gamename"));
+		configurationColumn.setCellValueFactory(new PropertyValueFactory<>("gamename"));
 		
-		// Init policy to resize window
+		// Initialize policy to resize window
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		// Add columns to the table

@@ -1,13 +1,14 @@
 package GameLogic;
 
 import controller.GameController;
+import javafx.scene.layout.Pane;
 
 public class Enemy extends Sprite{
 
 	private static boolean direction;
 	
-	public Enemy(int x, int y, String image) {
-		super(40, 40, x, y, image);
+	public Enemy(int x, int y, String image, Pane root) {
+		super(40, 40, x, y, image, root);
 		
 		
 	}
@@ -23,7 +24,7 @@ public class Enemy extends Sprite{
 	public void update() {
 		// TODO Auto-generated method stub
 		if(dead) {
-			GameController.getPane().getChildren().remove(this);
+			getRoot().getChildren().remove(this);
 		} else {
 			move();
 			

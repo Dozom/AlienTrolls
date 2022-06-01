@@ -1,6 +1,7 @@
 package GameLogic;
 
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
@@ -9,12 +10,14 @@ public abstract class Sprite extends Rectangle {
 	final int SCREEN_HEIGHT = 480;
 	
 	boolean dead = false;
+	private Pane root;
 	
 	public final int MOVE_STEPS = 2; //Move speed basically.
 	public String type;
 	
-	public Sprite(int w, int h, int x, int y, String image) {
+	public Sprite(int w, int h, int x, int y, String image, Pane root) {
 		super(w,h);
+		this.setRoot(root);
 		setTranslateX(x);
 		setTranslateY(y);
 		Image s;
@@ -85,6 +88,14 @@ public abstract class Sprite extends Rectangle {
 	
 	public String getType() {
 		return type;
+	}
+
+	public Pane getRoot() {
+		return root;
+	}
+
+	public void setRoot(Pane root) {
+		this.root = root;
 	}
 	
 }

@@ -1,9 +1,11 @@
 package controller;
 
-import java.util.Random;
 import GameLogic.*;
+import css.CssPath;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,28 +13,63 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import view.ViewPath;
 
 public class GameController {
-	
+	private int type;
+	private int userId;
+	private String username;
+
+	private Pane root = new Pane();	
 	private int score = 0;
-	Random r;
-	private static Pane root = new Pane();	
-	private Player plyr = new Player(300, 400, "/home/rguinartv/Imatges/sneed.png");
-	private Projectile plyrBull = plyr.plyrBull;
-	
-	private final int ROWS = 4;
-	private final int COLUMNS = 6;
+	Stage prevStage;
+	private final int ROWS = 3;
+	private final int COLUMNS = 5;
 	private final int maxScore = (ROWS * (ROWS + 1) / 2) * 10 * COLUMNS;
+	
+	private Player plyr = new Player(300, 400, "https://cdn.picpng.com/alien/alien-head-green-face-creature-55271.png", root);
+	private Projectile plyrBull = plyr.plyrBull;
 	private Enemy[][] aliens = new Enemy[ROWS][COLUMNS];
-	private Projectile[] alienBulls = new Projectile[10]; //At most, 3 projectiles will be on screen at the same time.
+	private Projectile[] alienBulls = new Projectile[10]; //At most, 10 projectiles will be on screen at the same time.
+	
 	private boolean alienDir;
 	private boolean gameOver;
+	private int ranked;	
 	
-	
-	GameController(Stage stage) {
-		loadGameScene(stage);
+	GameController(Stage stage, int ranked) {
+		this.prevStage = stage;
+		this.ranked = ranked;
+		loadGameScene(prevStage);
 	}
+	
+	public int getType() {
+		return type;
+	}
+
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+
+	public int getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 
 	
 	/**
@@ -57,16 +94,21 @@ public class GameController {
 		timer.start();
 		
 		nextLevel();
-	
+		if (ranked == 1) {
+			root.setId("rankedGame");
+		} else {
+			root.setId("gamePane");
+		}		
+		root.getStylesheets().add(CssPath.class.getResource("gameBackground.css").toExternalForm());			
 		return root;
 	} 
 
 	
 	/**
-	 * Runs every tick. Moves bullets and enemies, checks collisions and deaths.
+	 * Runs every tick. Moves bullets and enemies, checks collisions, and checks deaths.
 	 */
 	private void update() {
-		
+
 		//MOVEMENT
 		plyr.update();
 		moveAliens();
@@ -75,7 +117,7 @@ public class GameController {
 		//COLLISIONS
 		
 		if(!plyrBull.isDead()) {
-			plyrBull.update();
+			plyrBull.update(); 
 
 			for (int i = 0; i < ROWS; i++) {
 				for (int j = 0; j < COLUMNS; j++) {
@@ -126,6 +168,7 @@ public class GameController {
 		}
 		
 		
+		
 	}
 	
 	/**
@@ -134,22 +177,22 @@ public class GameController {
 	private void nextLevel() {
 		for (int i = 0; i < aliens.length; i++) {
 			for (int j = 0; j < aliens[i].length; j++) {
-				 aliens[i][j] = new Enemy(50+j*50, 50+i*50, "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg");
+				 aliens[i][j] = new Enemy(50+j*50, 50+i*50, "https://upload.wikimedia.org/wikipedia/commons/7/7e/Demon_Icon.png", root);
 				 root.getChildren().add(aliens[i][j]);
 			}
 		}
 	}
 	
 	/**
-	 * Shooting function for the aliens.
-	 * @param shooter alien that shoots
+	 * Shoots 
+	 * @param shooter
 	 */
 	private void shoot(Sprite shooter) {
 		for (int i = 0; i < alienBulls.length; i++) {
 			if(alienBulls[i] == null || alienBulls[i].isDead()) {
 				alienBulls[i]  = new Projectile((int)(shooter.getTranslateX() + shooter.getWidth()/2),
-					     (int)(shooter.getTranslateY() + shooter.getHeight()/2), 
-					     "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", true);
+					     (int)(shooter.getTranslateY() + shooter.getHeight()), 
+					     "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", true, root);
 				root.getChildren().add(alienBulls[i]);
 				break;
 			}
@@ -164,6 +207,7 @@ public class GameController {
 	public void loadGameScene(Stage stage) {
 		try {
 			Scene sc = new Scene(setupGame());
+
 			sc.setOnKeyPressed(e -> {
 				
 				switch (e.getCode()) {
@@ -213,8 +257,8 @@ public class GameController {
 		
 		if(checkAlienColumn()) { //If they've reached one of the screen's edges...
 
-			for (Enemy[] aliens : aliens) {
-				for (Enemy alien : aliens) {
+			for (Sprite[] aliens : aliens) {
+				for (Sprite alien : aliens) {
 					alien.moveDown();
 				}
 			}
@@ -304,37 +348,66 @@ public class GameController {
 	private void gameOver(boolean hasWon) {
 		if(!gameOver) {
 			gameOver = true;
-			String gameOverText = hasWon ? "Has guanyat, felicitats!" : "Has perdut!";
-			Button tancar = new Button("Tancar joc");
-			tancar.setOnAction(e -> {
-				Platform.exit();
-			});;
-			
-			Button mainMenu = new Button("Menu Principal");
-			Label b = new Label(gameOverText);
-			final  Stage stage = new Stage();           
-			BorderPane root = new BorderPane();
-			root.setCenter(b);
-			BorderPane Botons = new BorderPane();
-			Botons.setLeft(mainMenu);
-			Botons.setRight(tancar);
-			root.setBottom(Botons);
-			Scene scene = new Scene(root, 200, 100);						          						         
-			stage.setScene(scene);        
-			stage.show();
+			endedGameScreen(hasWon);
 		}
 	}
-	
-	private void loadMainMenu() {
-		
-	}
-	
 
-	/**
-	 * Returns the parent element.
-	 */
-	public static Pane getPane() {
-		return root;
+	private void endedGameScreen(boolean hasWon) {
+		final  Stage stage = new Stage();           
+
+		// Label Text
+		String gameOverText = hasWon ? "Has guanyat, felicitats!" : "Has perdut!";
+
+		// Button to close the game
+		Button tancar = new Button("Tancar joc");
+		tancar.setOnAction(e -> {
+			// Exit application
+			Platform.exit();
+		});			
+		
+		// Button to load Main Menu
+		Button mainMenu = new Button("Menu Principal");
+		mainMenu.setOnAction(e -> {
+			closeEndedGameMenu(e);
+			// Load Main Menu Scene
+			loadMainMenuScene();
+		});			
+
+		// Text which indicates if the player won or lose
+		Label winOrLose = new Label(gameOverText);
+		
+		// ended Game Screen Stage
+		BorderPane endGameScreenGame = new BorderPane();
+		endGameScreenGame.setCenter(winOrLose);
+		
+		// Add buttons
+		BorderPane buttonsPane = new BorderPane();
+		buttonsPane.setLeft(mainMenu);
+		buttonsPane.setRight(tancar);
+		endGameScreenGame.setBottom(buttonsPane);
+		
+		// Add Scene with the content and set it to the Stage & Show
+		Scene scene = new Scene(endGameScreenGame, 200, 100);						          						         
+		stage.setScene(scene);        
+		stage.show();
 	}
+
+	private void closeEndedGameMenu(ActionEvent e) {
+		Stage hideOnClick = ((Stage)((Node)e.getSource()).getScene().getWindow());
+		hideOnClick.hide();
+	}
+	
+	/**
+	 * This method loads the Main Menu Page
+	 * @param actualStage Stage to load the next Scene
+	 */
+	public void loadMainMenuScene() {
+		try {
+			new MainMenuController(prevStage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+
 
 }

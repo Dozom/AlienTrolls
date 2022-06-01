@@ -2,6 +2,7 @@ package GameLogic;
 
 
 import controller.GameController;
+import javafx.scene.layout.Pane;
 
 public class Player extends Sprite {
 
@@ -9,10 +10,10 @@ public class Player extends Sprite {
 	private float velocity = 0;
 	private boolean movingLeft = false, movingRight = false;
 	private boolean shooting = false;
-	public Projectile plyrBull = new Projectile(0, 0, "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", false);
+	public Projectile plyrBull = new Projectile(0, 0, "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", false, getRoot());
 
-	public Player(int x, int y, String image) {
-		super(40, 40, x, y, image);
+	public Player(int x, int y, String image, Pane root) {
+		super(40, 40, x, y, image, root);
 	}
 	
 	@Override
@@ -68,7 +69,7 @@ public class Player extends Sprite {
 		plyrBull.setTranslateY((int)(getTranslateY() - getHeight()/2));
 		plyrBull.setDead(false);
 		
-		GameController.getPane().getChildren().add(plyrBull);
+		getRoot().getChildren().add(plyrBull);
 	}
 
 	public void setMovingLeft(boolean moving) {

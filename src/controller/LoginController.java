@@ -11,12 +11,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import view.ViewPath;
-
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
-
 import css.CssPath;
 
 /**
@@ -24,54 +23,85 @@ import css.CssPath;
  *
  */
 public class LoginController {
+	private Stage prevStage;
+	private Parent parent;
 
-	// Login Button, button to Log In
-	@FXML
-	private Button loginButton = new Button();
+	// Login variables
 	private int type;
 	private int userId;
 	private String username;
 
-	// Password Field, field which receives the password
+	// FXML Elements
+	@FXML
+	private Button loginButton = new Button();
 	@FXML
 	public PasswordField passwordText = new PasswordField();
-
-	// User name Field, field which receives the user name
 	@FXML
 	public TextField usernameText = new TextField();
 
-	@FXML
 	/**
-	 * This function is executed when the user hits the loginBUtton
-	 * 
-	 * @param event Catch the event of login button to check the login
+	 * Empty Constructor
 	 */
-	void userLogin(ActionEvent event) {
-		if (validLogin()) {
-			// Load Main Menu (next screen) loading the new Scene
-			writePlayerConfig();
-			Stage mainMenu = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	public LoginController() {
 
-			// Load Main Menu Scene
-			loadMainMenuScene(mainMenu, type, userId);
-		} else {
-			// Login Failed
-			loadLoginErrorView();
-			System.out.println("Loggin Failed");
+	}
+
+	/**
+	 * This Controller initialize the Login View
+	 * @param stage
+	 */
+	public LoginController(Stage stage) {
+		// Obtain the previous Stage, to Change it
+		this.prevStage = stage;
+
+		try {
+			loadLoginView();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * This method loads the Main Menu Page
-	 * 
-	 * @param actualStage Stage to load the next Scene
+	 * This function, loads the Login View
+	 * @throws IOException Input Output Exception
 	 */
-	public void loadMainMenuScene(Stage actualStage, int type, int userId) {
+	private void loadLoginView() throws IOException {
+		parent = FXMLLoader.load(ViewPath.class.getResource("LoginView.fxml"));
+		Scene scene = new Scene(parent, 640, 480);
+		scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
+
+		// Change Scene
+		prevStage.setScene(scene);
+		prevStage.show();
+	}
+
+	// Events
+	/**
+	 * Function executed when loginButton is Pressed, it loads Main Menu Scene or
+	 * Error View depending on Login
+	 * @param event Catch the User Login button
+	 */
+	@FXML
+	void userLogin(ActionEvent event) {
+		if (checkLogin()) {
+			// Save previous Stage
+			prevStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+			// Load Main Menu Scene
+			loadMainMenuScene();
+		} else {
+
+			// Login Failed
+			loadLoginErrorView();
+		}
+	}
+
+	/**
+	 * This method loads the Main Menu View
+	 */
+	public void loadMainMenuScene() {
 		try {
-			Parent root = FXMLLoader.load(ViewPath.class.getResource("MainMenuView.fxml"));
-			Scene scene = new Scene(root, 640, 480);
-			actualStage.setScene(scene);
-			actualStage.show();
+			new MainMenuController(prevStage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -84,7 +114,6 @@ public class LoginController {
 		try {
 			Stage loginError = new Stage();
 			Parent root = FXMLLoader.load(ViewPath.class.getResource("LoginErrorView.fxml"));
-			// Scene with 640 width and 480 height
 			Scene scene = new Scene(root, 100, 100);
 			// Add css
 			scene.getStylesheets().add(CssPath.class.getResource("application.css").toExternalForm());
@@ -98,63 +127,56 @@ public class LoginController {
 	}
 
 	/**
-	 * This method returns if is a valid login or not
-	 * 
+	 * This method returns if is a valid login or not and writes the User Properties
 	 * @return Returns true or false
 	 */
-	private boolean validLogin() {
-		System.out.println(usernameText.getText());
+	private boolean checkLogin() {
 		try {
-			// Create the connection
-			ConnectDBController c = new ConnectDBController();
+			ResultSet userData = checkUserPasswordInDb();
 
-			// Prepare the statement to check if login is valid
-			PreparedStatement s = c.getConnection()
-					.prepareStatement("SELECT type, username, ID FROM User where username like ? and password like ?");
-
-			// Add parameters to check the login is valid
-			s.setString(1, usernameText.getText());
-			s.setString(2, passwordText.getText());
-
-			// Execute the prepared statement and save it into ResultSet
-			ResultSet r = s.executeQuery();
-
-			// If the query returns values, then login is valid and returns true
-			if (r.next()) {
+			if (userData.next()) {
 				// Set properties to Play
-				type = Integer.parseInt(r.getString(1));
-				username = String.valueOf(r.getString(2));
-				userId = Integer.parseInt(r.getString(3));
+				type = Integer.parseInt(userData.getString(1));
+				username = String.valueOf(userData.getString(2));
+				userId = Integer.parseInt(userData.getString(3));
+
+				// Write user Properties in a text file
+				writeUserProperties();
 				return true;
 			}
-
-			// Else, the query doesn't returns values, then the login is invalid and returns
-			// false
 			return false;
-
 		} catch (Exception e) {
-
-			// Print in console
-			e.printStackTrace();
-
-			// If hits this point, login is not valid
+			System.out.println("Login is not valid");
 			return false;
 		}
 	}
 
 	/**
-	 * This function writes the player config into a File, to play Game
-	 * user_id;type;username
+	 * Check and Return User Data from database
+	 * @return Return a ResultSet with Logged user Data or Empty
+	 * @throws SQLException SQL Exception
 	 */
-	public void writePlayerConfig() {
-		try {
-			PrintWriter writer = new PrintWriter("loggedUser.txt", "UTF-8");
-			System.out.println("oke");
-			writer.println("" + userId + ";" + type + ";" + username + "");
-			writer.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
+	private ResultSet checkUserPasswordInDb() throws SQLException {
+		// Create the connection
+		ConnectDBController c = new ConnectDBController();
+		// Prepare the statement to check if login is valid
+		PreparedStatement s = c.getConnection()
+				.prepareStatement("SELECT type, username, ID FROM User where username like ? and password like ?");
+		s.setString(1, usernameText.getText());
+		s.setString(2, passwordText.getText());
+
+		// Execute the prepared statement and save it into ResultSet
+		ResultSet r = s.executeQuery();
+		return r;
+	}
+
+	/**
+	 * This method write the logged User Properties in a file
+	 */
+	private void writeUserProperties() throws FileNotFoundException, UnsupportedEncodingException {
+		PrintWriter writer = new PrintWriter("loggedUser.txt", "UTF-8");
+		// Write player variables in file
+		writer.println("" + userId + ";" + type + ";" + username + "");
+		writer.close();
 	}
 }

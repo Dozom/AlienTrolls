@@ -1,0 +1,9 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+#gamePane {
+    -fx-background-image: url("https://us.123rf.com/450wm/panychev/panychev1603/panychev160300582/54290527-abstract-blue-dark-background.jpg");
+}
+
+#rankedGame {
+    -fx-background-image: url("https://comojuega.files.wordpress.com/2013/11/hd-desktop-wallpaper-hd-dark-black-wallpapers-dark-black-wallpaper-dark-background-dark-wallpaper-23-1-1600x10001.jpg?w=810");
+}
+
