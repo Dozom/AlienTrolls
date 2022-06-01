@@ -23,6 +23,10 @@ public class RankingController {
 	String[] loginInfo;
 	ArrayList<PlayerOnly> playerData = new ArrayList<PlayerOnly>();
 	
+	/**
+	 * Constructor of the Ranking Page
+	 * @param stage Previous Stage
+	 */
 	public RankingController(Stage stage) {
 		loadRankingScene(stage);
 	}
@@ -86,7 +90,10 @@ public class RankingController {
 		return table;
 	}
 
-
+	/**
+	 * Creates back button
+	 * @return Returns the back button
+	 */
 	private Button backButton() {
 		Button b = new Button("Back to Main Menu");
 		b.setOnAction(e ->{
@@ -99,7 +106,11 @@ public class RankingController {
 		});
 		return b;
 	}
-	
+
+	/**
+	 * This method loads the Main Menu Scene
+	 * @param actualStage actual Stage to change it
+	 */
 	private void loadMainMenuScene(Stage actualStage) {
 
 		try {
@@ -113,6 +124,11 @@ public class RankingController {
 		}
 
 	}
+	
+	/**
+	 * Title of the Top Label of the Ranking
+	 * @return Returns the top label of the ranking
+	 */
 	private Label titleLabel() {
 		Label title = new Label("History of Player: " + loginInfo[2]);
 	    title.setStyle("-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: green; -fx-padding:10 5 10 5");
@@ -132,6 +148,12 @@ public class RankingController {
 			e.printStackTrace();
 		}		
 	}
+	
+	/**
+	 * Gets the data from ranking
+	 * @param userid User Id to get the information about the user
+	 * @return Returns true or false
+	 */
     public boolean getPlayerDataDB(int userid) {
     	try {        		
 	    	ConnectDBController c = new ConnectDBController();

@@ -4,6 +4,9 @@ package GameLogic;
 import controller.GameController;
 import javafx.scene.layout.Pane;
 
+/**
+ * Player Class which inherits from Sprite
+ */
 public class Player extends Sprite {
 
 	final double acceleration = 0.5;
@@ -12,17 +15,30 @@ public class Player extends Sprite {
 	private boolean shooting = false;
 	public Projectile plyrBull = new Projectile(0, 0, "https://assets.partyking.org/img/products/180/trollface-pappmask-1.jpg", false, getRoot());
 
+	/**
+	 * Player constructor
+	 * @param x X of the player
+	 * @param y Y of the player
+	 * @param image image of the player
+	 * @param root root Pane of the player
+	 */
 	public Player(int x, int y, String image, Pane root) {
 		super(40, 40, x, y, image, root);
 	}
 	
 	@Override
+	/**
+	 * Update the player
+	 */
 	public void update() {
 		if(dead) return;
 		move();
 		if(shooting) shoot();
 	}
 
+	/**
+	 * Moves the player
+	 */
 	public void move() {
 		
 
@@ -61,6 +77,9 @@ public class Player extends Sprite {
 		setTranslateX(getTranslateX() + velocity);
 	}
 	
+	/**
+	 * Shoots top
+	 */
 	public void shoot() {
 		// TODO Auto-generated method stub
 		if(!plyrBull.isDead()) return;
@@ -72,13 +91,25 @@ public class Player extends Sprite {
 		getRoot().getChildren().add(plyrBull);
 	}
 
+	/**
+	 * Manage the move of the player
+	 * @param moving true to move
+	 */
 	public void setMovingLeft(boolean moving) {
 		this.movingLeft = moving;
 	}
 
+	/**
+	 * Manage the move of the player
+	 * @param movingRight true to move
+	 */
 	public void setMovingRight(boolean movingRight) {
 		this.movingRight = movingRight;
 	}
 
+	/**
+	 * Sets if shooting
+	 * @param shooting shooting
+	 */
 	public void setShooting(boolean shooting) { this.shooting = shooting; }
 }

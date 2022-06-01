@@ -32,7 +32,7 @@
                   <Slider fx:id="playerSpeedSlider" layoutX="50.0" layoutY="428.0" max="10.0" min="1.0" onMouseDragged="#getPlayerSpeed" prefHeight="16.0" prefWidth="290.0" />
                   <Button fx:id="loadConfigurationButton" layoutX="422.0" layoutY="476.0" mnemonicParsing="false" text="Load Configuration" />
                   <Button fx:id="saveConfigurationButton" layoutX="422.0" layoutY="516.0" mnemonicParsing="false" text="Save Configuration" />
-                  <Button fx:id="cancelButton" layoutX="422.0" layoutY="556.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="142.0" text="Cancel" />
+                  <Button fx:id="cancelButton" layoutX="422.0" layoutY="556.0" mnemonicParsing="false" prefHeight="24.0" onAction="#cancelConfiguration" prefWidth="142.0" text="Cancel" />
                   <Label fx:id="alienSpeedLabel" layoutX="139.0" layoutY="94.0" text="1" />
                   <Label fx:id="projectileSpeedLabel" layoutX="165.0" layoutY="256.0" text="1" />
                   <Label fx:id="playerSpeedLabel" layoutX="144.0" layoutY="400.0" text="1" />

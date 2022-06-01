@@ -14,6 +14,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+/**
+ * This Class manage the Game Scene
+ */
 public class GameController {
 	private int type;
 	private int userId;
@@ -35,37 +38,62 @@ public class GameController {
 	private boolean gameOver;
 	private int ranked;	
 	
+	/**
+	 * This constructor initialize the Game Screen
+	 * @param stage Previous Stage
+	 * @param ranked If game is ranked or not
+	 */
 	GameController(Stage stage, int ranked) {
 		this.prevStage = stage;
 		this.ranked = ranked;
 		loadGameScene(prevStage);
 	}
 	
+	/**
+	 * Returns the Type of the Game
+	 * @return 
+	 */
 	public int getType() {
 		return type;
 	}
 
-
+	/**
+	 * Sets the Type of the Game
+	 * @param type type parameter to set
+	 */
 	public void setType(int type) {
 		this.type = type;
 	}
 
 
+	/**
+	 * Gets the User Id
+	 * @return userId
+	 */
 	public int getUserId() {
 		return userId;
 	}
 
-
+	/**
+	 * Setter userId
+	 * @param userId User Id parameter
+	 */
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
-
+	/**
+	 * Gets the user name
+	 * @return returns the user name
+	 */
 	public String getUsername() {
 		return username;
 	}
 
-
+	/**
+	 * Sets the user name
+	 * @param username user name to set
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -75,7 +103,6 @@ public class GameController {
 	/**
 	 * Changes window size if needed, creates the player and starts the game loop.
 	 * @return the pane
-	 * 
 	 * @see update
 	 */
 	private Parent setupGame() {
@@ -177,7 +204,7 @@ public class GameController {
 	private void nextLevel() {
 		for (int i = 0; i < aliens.length; i++) {
 			for (int j = 0; j < aliens[i].length; j++) {
-				 aliens[i][j] = new Enemy(50+j*50, 50+i*50, "https://upload.wikimedia.org/wikipedia/commons/7/7e/Demon_Icon.png", root);
+				 aliens[i][j] = new Enemy(50+j*50, 50+i*50, "https://cdn-icons-png.flaticon.com/512/779/779088.png", root);
 				 root.getChildren().add(aliens[i][j]);
 			}
 		}
@@ -352,6 +379,10 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * Loads the ended Game Screen
+	 * @param hasWon it save if the user won or lose
+	 */
 	private void endedGameScreen(boolean hasWon) {
 		final  Stage stage = new Stage();           
 
@@ -392,6 +423,10 @@ public class GameController {
 		stage.show();
 	}
 
+	/**
+	 * Manage the Close button of the ended Game Screen
+	 * @param e Event of the button
+	 */
 	private void closeEndedGameMenu(ActionEvent e) {
 		Stage hideOnClick = ((Stage)((Node)e.getSource()).getScene().getWindow());
 		hideOnClick.hide();

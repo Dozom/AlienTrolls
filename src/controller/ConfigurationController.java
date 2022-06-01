@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 import css.CssPath;
 import view.ViewPath;
 
+/**
+ * Configuration Controller Class to manage the game controller.
+ */
 public class ConfigurationController {
 	// Connection to DB
 	Connection conn;
@@ -79,6 +82,10 @@ public class ConfigurationController {
     	
     }
     
+    /**
+     * Constructor of Configuration Controller
+     * @param stage Previous Stage
+     */
     public ConfigurationController(Stage stage) {
 		this.prevStage = stage;
 		try {
@@ -110,10 +117,16 @@ public class ConfigurationController {
     	playerSpeedLabel.setText(String.valueOf((int)playerSpeedSlider.getValue()));
     }
 
+    
     @FXML
+    /**
+     * Save Configuration Only Player Button Handler
+     * @param event Event to manage the button 
+     */
     void saveConfigurationOnlyPlayer(MouseEvent event) {
     	// Set the Configuration for only one player
     }
+    
      /**
 	 * Load Login Error View
 	 */
@@ -158,6 +171,13 @@ public class ConfigurationController {
 		}    	
     	System.out.println("Guardando la configuracion");
     }
+    
+    @FXML
+    void cancelConfiguration(ActionEvent event) {
+		loadMainMenuScene((Stage)((Node)event.getSource()).getScene().getWindow());
+
+    }
+
     
     /**
      * This function inserts the values in the Configuration Table
@@ -234,7 +254,7 @@ public class ConfigurationController {
 
     /**
      * This function loads a configuration.
-     * @param event
+     * @param event Event to handle the load Configuration Button
      */
     @FXML
     void loadConfiguration(MouseEvent event) {

@@ -9,5 +9,6 @@ module AlienTrolls {
 	requires java.sql;
 	
 	opens controller;
+	opens RankingViews to javafx.base;
 	
 }

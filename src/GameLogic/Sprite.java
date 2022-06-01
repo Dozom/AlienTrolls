@@ -5,6 +5,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Abstract class of the Sprite
+ */
 public abstract class Sprite extends Rectangle {
 	final int SCREEN_WIDTH  = 640;
 	final int SCREEN_HEIGHT = 480;
@@ -15,6 +18,15 @@ public abstract class Sprite extends Rectangle {
 	public final int MOVE_STEPS = 2; //Move speed basically.
 	public String type;
 	
+	/**
+	 * Constructor of theS Sprite
+	 * @param w width of the Sprite
+	 * @param h Height of the Sprite
+	 * @param x X of the Sprite
+	 * @param y Y of the Sprite
+	 * @param image image of the Sprite
+	 * @param root root Pane of the Sprite
+	 */
 	public Sprite(int w, int h, int x, int y, String image, Pane root) {
 		super(w,h);
 		this.setRoot(root);
@@ -30,6 +42,9 @@ public abstract class Sprite extends Rectangle {
 		}
 	}
 	
+	/**
+	 * abstract update method
+	 */
 	public abstract void update();
 	
 
@@ -86,14 +101,26 @@ public abstract class Sprite extends Rectangle {
 	public void setDead(boolean d) { dead = d; }
 	public boolean isDead() { return dead; }
 	
+	/**
+	 * Gets the type
+	 * @return returns the type
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * Gets the root pane
+	 * @return returns the root pane
+	 */
 	public Pane getRoot() {
 		return root;
 	}
 
+	/**
+	 * Sets the root pane
+	 * @param root sets the root pane
+	 */
 	public void setRoot(Pane root) {
 		this.root = root;
 	}
